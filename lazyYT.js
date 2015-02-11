@@ -90,11 +90,13 @@
           thumb_img = 'default.jpg';
         }
         
+	var urlbase = '//i.ytimg.com/vi/'+id+'/';
+
         $thumb = $el.find('.ytp-thumbnail').css({
-            'background-image': ['url(http://img.youtube.com/vi/', id, '/', thumb_img, ')'].join('')
+	    'background-image': 'url(' + urlbase + thumb_img + ')'
         })
           .addClass('lazyYT-image-loaded')
-          .on('click', function (e) {
+          .on('click touchstart', function (e) {
             e.preventDefault();
             if (!$el.hasClass('lazyYT-video-loaded') && $thumb.hasClass('lazyYT-image-loaded')) {
               $el.html('<iframe src="//www.youtube.com/embed/' + id + '?autoplay=1&' + youtube_parameters + '" frameborder="0" allowfullscreen></iframe>')
@@ -104,6 +106,12 @@
 
         $.getJSON('https://gdata.youtube.com/feeds/api/videos/' + id + '?v=2&alt=json', function (data) {
             $el.find('#lazyYT-title-' + id).text(data.entry.title.$t);
+	    // work around the missing maxresdefault
+	    if( thumb_img == 'maxresdefault.jpg' && data.entry['yt$hd'] == undefined ) {
+		$el.find('.ytp-thumbnail').css({
+		    'background-image': 'url(' + urlbase + 'hqdefault.jpg)'
+		});
+	    }
         });
 
     }
