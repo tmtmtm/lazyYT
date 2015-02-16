@@ -92,9 +92,8 @@
         
 	var urlbase = '//i.ytimg.com/vi/'+id+'/';
 
-        $thumb = $el.find('.ytp-thumbnail').css({
-	    'background-image': 'url(' + urlbase + thumb_img + ')'
-        })
+        $thumb = $el.find('.ytp-thumbnail')
+	  .css({ 'background-image': 'url(' + urlbase + thumb_img + ')' })
           .addClass('lazyYT-image-loaded')
           .on('click touchstart', function (e) {
             e.preventDefault();
@@ -107,10 +106,18 @@
         $.getJSON('https://gdata.youtube.com/feeds/api/videos/' + id + '?v=2&alt=json', function (data) {
             $el.find('#lazyYT-title-' + id).text(data.entry.title.$t);
 	    // work around the missing maxresdefault
-	    if( thumb_img == 'maxresdefault.jpg' && data.entry['yt$hd'] == undefined ) {
-		$el.find('.ytp-thumbnail').css({
-		    'background-image': 'url(' + urlbase + 'hqdefault.jpg)'
-		});
+	    if( thumb_img == 'maxresdefault.jpg' ) {
+		if( data.entry['yt$hd'] == undefined ) {
+		    // video is not hd
+		    $thumb.css({ 'background-image': 'url(' + urlbase + 'sddefault.jpg)' });
+		} else {
+		    // video is hd, but still may not have maxresdefault - check for 404 default thumb
+		    var img = new Image;
+		    img.src = urlbase + thumb_img;
+		    if( img.width == 120 ) { // 404 thumbnail is always same small size
+	    		$thumb.css({ 'background-image': 'url(' + urlbase + 'sddefault.jpg)' });
+		    }
+		}
 	    }
         });
 
