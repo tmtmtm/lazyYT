@@ -109,7 +109,7 @@
 	    if( thumb_img == 'maxresdefault.jpg' ) {
 		if( data.entry['yt$hd'] == undefined ) {
 		    // video is not hd
-		    $thumb.css({ 'background-image': 'url(' + urlbase + 'sddefault.jpg)' });
+		    $thumb.css({ 'background-image': 'url(' + urlbase + 'hqdefault.jpg)' });
 		} else {
 		    // video is hd, but still may not have maxresdefault - check for 404 default thumb
 		    var img = new Image;
