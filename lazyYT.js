@@ -114,9 +114,13 @@
 		    // video is hd, but still may not have maxresdefault - check for 404 default thumb
 		    var img = new Image;
 		    img.src = urlbase + thumb_img;
-		    if( img.width == 120 ) { // 404 thumbnail is always same small size
-	    		$thumb.css({ 'background-image': 'url(' + urlbase + 'sddefault.jpg)' });
-		    }
+		    $(img).one("load", function() {
+			if( this.width == 120 ) { // 404 thumbnail is always same small size
+			    $thumb.css({ 'background-image': 'url(' + urlbase + 'sddefault.jpg)' });
+			}
+		    }).each(function(){
+			if(this.complete) $(this).load();
+		    });
 		}
 	    }
         });
